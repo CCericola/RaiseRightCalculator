@@ -6,9 +6,11 @@ internal class Program
     {
         var depositFile = args[0];
         var purchaseFile = args[1];
+        var outputFile = args[2];
 
         List<DepositRecord> sourceDepositRecords;
         List<PurchaseRecord> sourcePurchaseRecords;
+        List<OutputRecord> outputRecords = new List<OutputRecord>();
 
         // Unsure why, be we need to force unicode for this to be read properly
         using (var depositFileReader = new StreamReader(depositFile, System.Text.Encoding.Unicode)) {
@@ -23,23 +25,48 @@ internal class Program
             }
         }
 
-        Console.WriteLine("Deposit Id, Deposit Date, Deposit AMount, Last Name, Rebate Amount");
-
-        foreach (var currentDeposit in sourceDepositRecords.OrderBy(x => x.DepositDate).ThenBy(x => x.DepositID))
-        {
+        foreach (var currentDeposit in sourceDepositRecords.OrderBy(x => x.DepositDate).ThenBy(x => x.DepositID)) {
             var currentPurchaseRecords = sourcePurchaseRecords.Where(x => x.order_id == currentDeposit.OrderID);
 
             if (currentPurchaseRecords.Count() == 0) {
-                // Abort, something is very wrong.
                 Console.WriteLine($"Order ID {currentDeposit.OrderID} not found, aborting");
                 break;
             }
 
             foreach (var currentPurchaseRecord in currentPurchaseRecords) {
-                Console.WriteLine($"{currentDeposit.DepositID.Trim()}, {currentDeposit.DepositDate:yyyy/MM/dd}, {currentDeposit.DepositAmount:$0.00}, {currentPurchaseRecord.last_name}, {currentDeposit.RebateAmount:$0.00}");
+                outputRecords.Add(new OutputRecord() {
+                    DepositId = currentDeposit.DepositID.Trim(),
+                    DepositDate = currentDeposit.DepositDate,
+                    DepositAmount = currentDeposit.DepositAmount,
+                    LastName = currentPurchaseRecord.last_name,
+                    RebateAmount = currentDeposit.RebateAmount
+                });
+            }
+        }
+
+        using (var outputFileWriter = new StreamWriter(outputFile)) {
+            outputFileWriter.WriteLine("Deposit Id, Deposit Date, Deposit AMount, Last Name, Rebate Amount");
+
+            foreach (var currentFamily in outputRecords.Select(x => x.LastName).Distinct().OrderBy(x => x)) {
+                var familyTotal = outputRecords.Where(x => x.LastName == currentFamily).Select(x => x.RebateAmount).Sum();
+                
+                foreach (var currentFamilyDeposit in outputRecords.Where(x => x.LastName == currentFamily)) {
+                    outputFileWriter.WriteLine($"{currentFamilyDeposit.DepositId.Trim()}, {currentFamilyDeposit.DepositDate:yyyy/MM/dd}, {currentFamilyDeposit.DepositAmount:$0.00}, {currentFamilyDeposit.LastName}, {currentFamilyDeposit.RebateAmount:$0.00}");
+                }
+
+                outputFileWriter.WriteLine($"{currentFamily} Total, , , , {familyTotal:$0.00}");
+                outputFileWriter.WriteLine();
             }
         }
     }
+}
+
+internal class OutputRecord {
+    public string DepositId { get; set; }
+    public DateTime DepositDate { get; set; }
+    public double DepositAmount { get; set; }
+    public string LastName { get; set; }
+    public double RebateAmount { get; set; }
 }
 
 internal class PurchaseRecord {
@@ -53,7 +80,7 @@ internal class PurchaseRecord {
     public double net_value { get; set; }
     public double net_cost { get; set; }
     public double rebate_dollars { get; set; }
-    public bool isActive { get; set;}
+    public bool isActive { get; set; }
 }
 
 internal class DepositRecord {
