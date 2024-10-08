@@ -78,9 +78,19 @@ internal class PurchaseRecord {
     public DateTime  order_date { get; set; }
     public string payment_type { get; set; }
     public double net_value { get; set; }
-    public double net_cost { get; set; }
+    // public double net_cost { get; set; }
     public double rebate_dollars { get; set; }
     public bool isActive { get; set; }
+
+    public string product_name { get; set;}
+    
+    public int quantity { get; set; }
+    
+    public string sales_type { get; set; }
+    
+    public decimal convenience_fee { get; set; }
+    public int DeliveryTypeId { get; set; }
+
 }
 
 internal class DepositRecord {
