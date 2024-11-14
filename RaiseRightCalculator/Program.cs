@@ -33,19 +33,23 @@ internal class Program
                 break;
             }
 
+            if (currentDeposit.OrderID == "44844855") {
+
+            }
+
             foreach (var currentPurchaseRecord in currentPurchaseRecords) {
                 outputRecords.Add(new OutputRecord() {
                     DepositId = currentDeposit.DepositID.Trim(),
                     DepositDate = currentDeposit.DepositDate,
                     DepositAmount = currentDeposit.DepositAmount,
                     LastName = currentPurchaseRecord.last_name,
-                    RebateAmount = currentDeposit.RebateAmount
+                    RebateAmount = currentPurchaseRecord.rebate_dollars
                 });
             }
         }
 
         using (var outputFileWriter = new StreamWriter(outputFile)) {
-            outputFileWriter.WriteLine("Deposit Id, Deposit Date, Deposit AMount, Last Name, Rebate Amount");
+            outputFileWriter.WriteLine("Deposit Id, Deposit Date, Deposit Amount, Last Name, Rebate Amount");
 
             foreach (var currentFamily in outputRecords.Select(x => x.LastName).Distinct().OrderBy(x => x)) {
                 var familyTotal = outputRecords.Where(x => x.LastName == currentFamily).Select(x => x.RebateAmount).Sum();
