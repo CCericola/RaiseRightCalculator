@@ -6,10 +6,12 @@ internal class Program
     {
         var depositFile = args[0];
         var purchaseFile = args[1];
-        var outputFile = args[2];
+        var onlineFile = args[2];
+        var outputFile = args[3];
 
         List<DepositRecord> sourceDepositRecords;
         List<PurchaseRecord> sourcePurchaseRecords;
+        List<OnlineOrderRecord> sourceOnlineOrders;
         List<OutputRecord> outputRecords = new List<OutputRecord>();
 
         // Unsure why, be we need to force unicode for this to be read properly
@@ -25,27 +27,49 @@ internal class Program
             }
         }
 
+        using (var onlineFileReeader = new StreamReader(onlineFile, System.Text.Encoding.Unicode)) {
+            using (var csvReader = new CsvReader(onlineFileReeader, System.Globalization.CultureInfo.CurrentCulture)) {
+                sourceOnlineOrders = csvReader.GetRecords<OnlineOrderRecord>().ToList();
+            }
+        }
+
         foreach (var currentDeposit in sourceDepositRecords.OrderBy(x => x.DepositDate).ThenBy(x => x.DepositID)) {
-            var currentPurchaseRecords = sourcePurchaseRecords.Where(x => x.order_id == currentDeposit.OrderID);
+            if (!string.IsNullOrEmpty(currentDeposit.OrderID)) {
+                var currentPurchaseRecords = sourcePurchaseRecords.Where(x => x.order_id == currentDeposit.OrderID);
 
-            if (currentPurchaseRecords.Count() == 0) {
-                Console.WriteLine($"Order ID {currentDeposit.OrderID} not found, aborting");
-                break;
+                if (currentPurchaseRecords.Count() == 0) {
+                    Console.WriteLine($"Order ID {currentDeposit.OrderID} not found, aborting");
+                    break;
+                }
+
+                foreach (var currentPurchaseRecord in currentPurchaseRecords) {
+                    outputRecords.Add(new OutputRecord() {
+                        DepositId = currentDeposit.DepositID.Trim(),
+                        DepositDate = currentDeposit.DepositDate,
+                        DepositAmount = currentDeposit.DepositAmount,
+                        LastName = currentPurchaseRecord.last_name,
+                        RebateAmount = currentPurchaseRecord.rebate_dollars
+                    });
+                }                
+            } else if (!string.IsNullOrEmpty(currentDeposit.VoucherId)) {
+                var currentOnlineRecords = sourceOnlineOrders.Where(x => x.VoucherNumber == currentDeposit.VoucherId);
+
+                if (currentOnlineRecords.Count() == 0) {
+                    Console.WriteLine($"Voucher ID {currentDeposit.OrderID} not found, aborting");
+                    break;
+                }
+
+                foreach (var currentPurchaseRecord in currentOnlineRecords) {
+                    outputRecords.Add(new OutputRecord() {
+                        DepositId = currentDeposit.DepositID.Trim(),
+                        DepositDate = currentDeposit.DepositDate,
+                        DepositAmount = currentDeposit.DepositAmount,
+                        LastName = currentPurchaseRecord.FamilyName,
+                        RebateAmount = currentPurchaseRecord.EarningsAmount
+                    });
+                }
             }
 
-            if (currentDeposit.OrderID == "44844855") {
-
-            }
-
-            foreach (var currentPurchaseRecord in currentPurchaseRecords) {
-                outputRecords.Add(new OutputRecord() {
-                    DepositId = currentDeposit.DepositID.Trim(),
-                    DepositDate = currentDeposit.DepositDate,
-                    DepositAmount = currentDeposit.DepositAmount,
-                    LastName = currentPurchaseRecord.last_name,
-                    RebateAmount = currentPurchaseRecord.rebate_dollars
-                });
-            }
         }
 
         using (var outputFileWriter = new StreamWriter(outputFile)) {
@@ -103,10 +127,16 @@ internal class DepositRecord {
     public double DepositAmount { get; set; }
     public DateTime StartRange { get; set; }
     public DateTime EndRange { get; set; }
-    public int poid { get; set; }
+    public int? poid { get; set; }
     public string confirmId { get; set; }
     public string OrderID { get; set; }
     public DateTime OrderDate { get; set; }
     public double RebateAmount { get; set; }
+    public string VoucherId { get; set; }
+}
 
+internal class OnlineOrderRecord {
+    public string VoucherNumber { get; set; }
+    public double EarningsAmount { get; set; }
+    public string FamilyName { get; set; }
 }
