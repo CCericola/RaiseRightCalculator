@@ -1,20 +1,30 @@
-Download 90 days of family order history as CSV
-Order History by Family and Product *and* online orders
-https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=FamilyOrderDetail&rpt=OrgAutoOrderRebate
-https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=NonGiftCardEarningsbyFamily&rpt=ShopOnlineEarningsByFamily
+## Downloading files from RaiseRight
 
-Download month of POs
+Log in to the Coordinator Dashboard at https://www.raiseright.com/shop/account/coordinator-dashboard
 
-Online Payment and Shop Online Deposit Slip
-https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=OrgAutoOrderRebate
+Download these three reports as CSV, using the current month's date range:
 
-Run the tool:
-RaiseRightCalculator [ORGFILE] [FAMILYFILE] [OUTPUTFILE]
+1. **Deposit / PO file** — "Online Payment and Shop Online Deposit Slip"
+   https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=OrgAutoOrderRebate
 
-Exampple
-./RaiseRightCalculator "C:\\Temp\\RaiseRight\\202509-Monthly Deposit Slip.csv" "C:\\Temp\\RaiseRight\\202509-Order History by Family and Product.csv" "C:\\Temp\\RaiseRight\\202509-Non-Gift Card Earnings by Family.csv" C:\\Temp\\RaiseRight\\202509-Raiseright.csv
+2. **Family purchase file** — "Order History by Family and Product"
+   https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=FamilyOrderDetail&rpt=OrgAutoOrderRebate
+   Use a 90-day window to capture all orders included in the deposit.
 
-./RaiseRightCalculator "C:\\Temp\\RaiseRight\\202605-Monthly Deposit Slip.csv" "C:\\Temp\\RaiseRight\\202605-Order History by Family and Product.csv" "C:\\Temp\\RaiseRight\\202605-Non-Gift Card Earnings by Family.csv" "C:\\Temp\\RaiseRight\\202605-Raiseright.csv"
+3. **Online earnings file** — "Non-Gift Card Earnings by Family"
+   https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=NonGiftCardEarningsbyFamily&rpt=ShopOnlineEarningsByFamily
+   Same date range as the deposit file. Skip this file if there were no online orders.
 
+---
 
-dotnet run -- ~/RaiseRight/202606-MonthlyDepositSlip.csv ~/RaiseRight/202606-OrderHistorybyFamilyandProduct.csv ~/RaiseRight/202606-Non-GiftCardEarningsbyFamily.csv ~/RaiseRight/202606-RaiseRight.csv
+## Running the tool
+
+Usage:
+  RaiseRightCalculator <deposit-file> <purchase-file> <online-file> <output-file>
+
+Pass "skip" for <online-file> if there were no online orders that month.
+
+Examples:
+  ./RaiseRightCalculator "C:\Temp\RaiseRight\202605-Monthly Deposit Slip.csv" "C:\Temp\RaiseRight\202605-Order History by Family and Product.csv" "C:\Temp\RaiseRight\202605-Non-Gift Card Earnings by Family.csv" "C:\Temp\RaiseRight\202605-Raiseright.csv"
+
+  dotnet run -- ~/RaiseRight/202606-MonthlyDepositSlip.csv ~/RaiseRight/202606-OrderHistorybyFamilyandProduct.csv ~/RaiseRight/202606-Non-GiftCardEarningsbyFamily.csv ~/RaiseRight/202606-RaiseRight.csv

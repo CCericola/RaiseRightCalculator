@@ -1,0 +1,101 @@
+@page "/"
+@using RaiseRightCalculator.Core
+@inject IJSRuntime JS
+
+<PageTitle>RaiseRight Calculator</PageTitle>
+
+<h1>RaiseRight Rebate Calculator</h1>
+
+<p>Upload the three CSV reports downloaded from RaiseRight to generate the treasurer report.</p>
+
+<div class="mb-3">
+    <h5>Step 1 — Download reports from RaiseRight</h5>
+    <p>Log in to the <a href="https://www.raiseright.com/shop/account/coordinator-dashboard" target="_blank">Coordinator Dashboard</a> and export these three reports as CSV using the current month's date range:</p>
+    <ol>
+        <li>
+            <strong>Deposit / PO file</strong> — Online Payment and Shop Online Deposit Slip<br />
+            <small><a href="https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=OrgAutoOrderRebate" target="_blank">Reports → OrgAutoOrderRebate</a></small>
+        </li>
+        <li>
+            <strong>Family purchase file</strong> — Order History by Family and Product<br />
+            <small><a href="https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=FamilyOrderDetail&rpt=OrgAutoOrderRebate" target="_blank">Reports → FamilyOrderDetail</a> — use a 90-day window</small>
+        </li>
+        <li>
+            <strong>Online earnings file</strong> — Non-Gift Card Earnings by Family (optional)<br />
+            <small><a href="https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=NonGiftCardEarningsbyFamily&rpt=ShopOnlineEarningsByFamily" target="_blank">Reports → NonGiftCardEarningsByFamily</a> — skip if no online orders this month</small>
+        </li>
+    </ol>
+</div>
+
+<div class="mb-3">
+    <h5>Step 2 — Upload files</h5>
+    <div class="mb-2">
+        <label>Deposit / PO file: <span class="text-danger">*</span></label>
+        <InputFile OnChange="e => depositFile = e.File" accept=".csv" />
+    </div>
+    <div class="mb-2">
+        <label>Family purchase file: <span class="text-danger">*</span></label>
+        <InputFile OnChange="e => purchaseFile = e.File" accept=".csv" />
+    </div>
+    <div class="mb-2">
+        <label>Online earnings file (optional):</label>
+        <InputFile OnChange="e => onlineFile = e.File" accept=".csv" />
+    </div>
+</div>
+
+<button class="btn btn-primary" @onclick="GenerateReport" disabled="@(depositFile is null || purchaseFile is null || isWorking)">
+    @(isWorking ? "Generating…" : "Generate Report")
+</button>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger mt-3">@errorMessage</div>
+}
+
+@code {
+    private IBrowserFile? depositFile;
+    private IBrowserFile? purchaseFile;
+    private IBrowserFile? onlineFile;
+    private bool isWorking;
+    private string errorMessage = "";
+
+    private async Task GenerateReport()
+    {
+        isWorking = true;
+        errorMessage = "";
+        try
+        {
+            const long MaxBytes = 10 * 1024 * 1024;
+
+            using var depositStream = new MemoryStream();
+            await depositFile!.OpenReadStream(MaxBytes).CopyToAsync(depositStream);
+            depositStream.Position = 0;
+
+            using var purchaseStream = new MemoryStream();
+            await purchaseFile!.OpenReadStream(MaxBytes).CopyToAsync(purchaseStream);
+            purchaseStream.Position = 0;
+
+            MemoryStream? onlineStream = null;
+            if (onlineFile is not null)
+            {
+                onlineStream = new MemoryStream();
+                await onlineFile.OpenReadStream(MaxBytes).CopyToAsync(onlineStream);
+                onlineStream.Position = 0;
+            }
+
+            var csv = RebateReportGenerator.GenerateReport(depositStream, purchaseStream, onlineStream);
+            onlineStream?.Dispose();
+
+            var fileName = $"RaiseRight-{DateTime.Now:yyyyMM}.csv";
+            await JS.InvokeVoidAsync("downloadFile", fileName, "text/csv", csv);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isWorking = false;
+        }
+    }
+}

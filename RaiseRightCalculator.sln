@@ -5,18 +5,58 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaiseRightCalculator", "RaiseRightCalculator\RaiseRightCalculator.csproj", "{0944FC55-404D-4199-89AC-F0304D340768}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaiseRightCalculator.Core", "RaiseRightCalculator.Core\RaiseRightCalculator.Core.csproj", "{EA77DF46-4E20-4EA5-AF93-88D561609A0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaiseRightCalculator.Web", "RaiseRightCalculator.Web\RaiseRightCalculator.Web.csproj", "{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|x64.Build.0 = Debug|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Debug|x86.Build.0 = Debug|Any CPU
 		{0944FC55-404D-4199-89AC-F0304D340768}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0944FC55-404D-4199-89AC-F0304D340768}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Release|x64.ActiveCfg = Release|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Release|x64.Build.0 = Release|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Release|x86.ActiveCfg = Release|Any CPU
+		{0944FC55-404D-4199-89AC-F0304D340768}.Release|x86.Build.0 = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|x64.Build.0 = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Debug|x86.Build.0 = Debug|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|x64.ActiveCfg = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|x64.Build.0 = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|x86.ActiveCfg = Release|Any CPU
+		{EA77DF46-4E20-4EA5-AF93-88D561609A0C}.Release|x86.Build.0 = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Debug|x86.Build.0 = Debug|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|x64.Build.0 = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{56EB73B9-39A3-45AF-B3EB-3ECEF60F63CA}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
