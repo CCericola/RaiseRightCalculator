@@ -1,7 +1,7 @@
 Download 90 days of family order history as CSV
 Order History by Family and Product *and* online orders
 https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=FamilyOrderDetail&rpt=OrgAutoOrderRebate
-https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=ShopOnlineEarningsByFamily
+https://www.raiseright.com/c/Org/Manage/Report/Selection?rpt=NonGiftCardEarningsbyFamily&rpt=ShopOnlineEarningsByFamily
 
 Download month of POs
 
@@ -12,4 +12,9 @@ Run the tool:
 RaiseRightCalculator [ORGFILE] [FAMILYFILE] [OUTPUTFILE]
 
 Exampple
-./RaiseRightCalculator C:\\Temp\\RaiseRight\\202412-OrgAutoOrderRebate.csv C:\\Temp\\RaiseRight\\202412-FamilyOrderHistoryByProduct.csv C:\\Temp\\RaiseRight\\202412-ShopOnlineEarningsByFamily.csv C:\\Temp\\RaiseRight\\202412-Raiseright.csv
+./RaiseRightCalculator "C:\\Temp\\RaiseRight\\202509-Monthly Deposit Slip.csv" "C:\\Temp\\RaiseRight\\202509-Order History by Family and Product.csv" "C:\\Temp\\RaiseRight\\202509-Non-Gift Card Earnings by Family.csv" C:\\Temp\\RaiseRight\\202509-Raiseright.csv
+
+./RaiseRightCalculator "C:\\Temp\\RaiseRight\\202605-Monthly Deposit Slip.csv" "C:\\Temp\\RaiseRight\\202605-Order History by Family and Product.csv" "C:\\Temp\\RaiseRight\\202605-Non-Gift Card Earnings by Family.csv" "C:\\Temp\\RaiseRight\\202605-Raiseright.csv"
+
+
+dotnet run -- ~/RaiseRight/202606-MonthlyDepositSlip.csv ~/RaiseRight/202606-OrderHistorybyFamilyandProduct.csv ~/RaiseRight/202606-Non-GiftCardEarningsbyFamily.csv ~/RaiseRight/202606-RaiseRight.csv

@@ -2,6 +2,8 @@
 
 internal class Program
 {
+    const string SKIP_FILE = "skip";
+
     private static void Main(string[] args)
     {
         var depositFile = args[0];
@@ -27,10 +29,14 @@ internal class Program
             }
         }
 
-        using (var onlineFileReeader = new StreamReader(onlineFile, System.Text.Encoding.Unicode)) {
-            using (var csvReader = new CsvReader(onlineFileReeader, System.Globalization.CultureInfo.CurrentCulture)) {
-                sourceOnlineOrders = csvReader.GetRecords<OnlineOrderRecord>().ToList();
-            }
+        if (onlineFile == SKIP_FILE) {
+            sourceOnlineOrders = new List<OnlineOrderRecord>();
+        } else {
+            using (var onlineFileReeader = new StreamReader(onlineFile, System.Text.Encoding.Unicode)) {
+                using (var csvReader = new CsvReader(onlineFileReeader, System.Globalization.CultureInfo.CurrentCulture)) {
+                    sourceOnlineOrders = csvReader.GetRecords<OnlineOrderRecord>().ToList();
+                }
+            }            
         }
 
         foreach (var currentDeposit in sourceDepositRecords.OrderBy(x => x.DepositDate).ThenBy(x => x.DepositID)) {
@@ -51,8 +57,8 @@ internal class Program
                         RebateAmount = currentPurchaseRecord.rebate_dollars
                     });
                 }                
-            } else if (!string.IsNullOrEmpty(currentDeposit.VoucherId)) {
-                var currentOnlineRecords = sourceOnlineOrders.Where(x => x.VoucherNumber == currentDeposit.VoucherId);
+            } else if (!string.IsNullOrEmpty(currentDeposit.EarningsId)) {
+                var currentOnlineRecords = sourceOnlineOrders.Where(x => x.VoucherNumber == currentDeposit.EarningsId);
 
                 if (currentOnlineRecords.Count() == 0) {
                     Console.WriteLine($"Voucher ID {currentDeposit.OrderID} not found, aborting");
@@ -127,12 +133,12 @@ internal class DepositRecord {
     public double DepositAmount { get; set; }
     public DateTime StartRange { get; set; }
     public DateTime EndRange { get; set; }
-    public int? poid { get; set; }
+    public int? PO { get; set; }
     public string confirmId { get; set; }
     public string OrderID { get; set; }
     public DateTime OrderDate { get; set; }
-    public double RebateAmount { get; set; }
-    public string VoucherId { get; set; }
+    public double Earnings { get; set; }
+    public string EarningsId { get; set; }
 }
 
 internal class OnlineOrderRecord {
