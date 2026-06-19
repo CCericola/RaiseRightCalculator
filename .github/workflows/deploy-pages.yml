@@ -28,25 +28,20 @@ jobs:
       - name: Publish Blazor app
         run: dotnet publish RaiseRightCalculator.Web/RaiseRightCalculator.Web.csproj -c Release -o publish
 
-      - name: Find wwwroot
-        id: paths
-        run: |
-          INDEX=$(find publish -name "index.html" | head -1)
-          WWWROOT=$(dirname "$INDEX")
-          echo "index=$INDEX" >> $GITHUB_OUTPUT
-          echo "wwwroot=$WWWROOT" >> $GITHUB_OUTPUT
-          echo "Found: $INDEX"
+      - name: List publish output
+        run: find publish -type f | sort
 
-      - name: Fix base href and add SPA fallback
+      - name: Add SPA fallback and suppress Jekyll
         run: |
-          sed -i 's|<base href="/" />|<base href="/RaiseRightCalculator/" />|g' "${{ steps.paths.outputs.index }}"
-          cp "${{ steps.paths.outputs.index }}" "${{ steps.paths.outputs.wwwroot }}/404.html"
-          touch "${{ steps.paths.outputs.wwwroot }}/.nojekyll"
+          WWWROOT=$(find publish -name "index.html" | head -1 | xargs dirname)
+          cp "$WWWROOT/index.html" "$WWWROOT/404.html"
+          touch "$WWWROOT/.nojekyll"
+          echo "WWWROOT=$WWWROOT" >> $GITHUB_ENV
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ steps.paths.outputs.wwwroot }}
+          path: ${{ env.WWWROOT }}
 
   deploy:
     needs: build
